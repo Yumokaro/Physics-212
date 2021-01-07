@@ -1,5 +1,7 @@
 GlowScript 3.0 VPython
 
+# This script will revolve the moon around earth, and the earth around the sun
+
 # Initial variables/values
 G = 6.67e-11
 mass_earth = 5.97e24
