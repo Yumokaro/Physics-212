@@ -1,0 +1,58 @@
+GlowScript 3.0 VPython
+
+# Initial variables/values
+G = 6.67e-11
+mass_earth = 5.97e24
+mass_moon = 7.35e22
+mass_sun = 1.9e30
+radius_earth = 6.37e6
+radius_moon = 1.74e6
+radius_sun = 696.34e6
+distance_earth_moon = 384.4e6
+distance_sun_earth = 149.6e9
+
+# Define Sun start
+sun = sphere(pos = vector(0,0,0), radius = (radius_sun)) 
+
+# Define Earth start
+earth = sphere(pos = vector(distance_sun_earth,0,0) + (sun.pos), radius = (radius_earth), make_trail = True)
+
+# Define Moon start
+moon = sphere(pos = vector(distance_earth_moon,0,0) + (earth.pos), radius = (radius_moon), make_trail = True)
+
+################################
+################################
+
+# Earth around Sun
+r_earth = earth.pos - sun.pos
+earth_pos_new = mass_earth*vector(0,sqrt((G*mass_sun)/(mag(r_earth))),0)
+
+# Moon around Earth
+r_moon = moon.pos - earth.pos
+moon_pos_new = mass_moon*vector(0,sqrt((G*mass_earth)/(mag(r_moon))),0)
+
+################################
+################################
+
+# 360 degrees - each tick
+dt = 360
+
+# Make stuff move - will continue indefinetly with True
+while True:
+    
+    # speed
+    rate(20000)
+    
+    # Update earth position around sun
+    r_earth = earth.pos - sun.pos
+    F = ((-G)*(mass_earth)*(mass_sun)/mag(r_earth)**2)*(norm(r_earth))
+    earth_pos_new = earth_pos_new + F*dt
+    
+    # Update moon position around earth
+    r_moon = moon.pos - earth.pos
+    F = ((-G)*(mass_moon)*(mass_earth)/mag(r_moon)**2)*(norm(r_moon))
+    moon_pos_new = moon_pos_new + F*dt
+    
+    # Move the earth/moon to new location from previous
+    earth.pos = earth.pos + (earth_pos_new * (dt/mass_earth))
+    moon.pos = moon.pos + (moon_pos_new * (dt/mass_moon) + (earth_pos_new * (dt/mass_earth)))
